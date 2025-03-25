@@ -8,7 +8,6 @@ local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Toggles = {
     Camera = false,
-    HeadAim = false,
     ESP = false
 }
 local CameraTarget = nil
@@ -50,30 +49,24 @@ local function FindClosestPlayerToScreenCenter()
     return closestPlayer
 end
 
-local function AimAtPlayer(player, aimAtHead)
+local function AimAtPlayer(player)
     if not IsPlayerAlive(player) then return end
     
     local character = player.Character
-    local targetPart = aimAtHead and character:FindFirstChild("Head") or character:FindFirstChild("HumanoidRootPart")
+    local targetPart = character:FindFirstChild("HumanoidRootPart")
     
     if targetPart then
         Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPart.Position)
     end
 end
 
-local function ToggleAimbot(aimAtHead)
-    if aimAtHead then
-        Toggles.HeadAim = not Toggles.HeadAim
-        Toggles.Camera = false
-    else
-        Toggles.Camera = not Toggles.Camera
-        Toggles.HeadAim = false
-    end
+local function ToggleAimbot()
+    Toggles.Camera = not Toggles.Camera
 
-    if Toggles.Camera or Toggles.HeadAim then
+    if Toggles.Camera then
         CameraTarget = FindClosestPlayerToScreenCenter()
         game.StarterGui:SetCore("ChatMakeSystemMessage", {
-            Text = Toggles.HeadAim and "Head Aimbot ON" or "Body Aimbot ON",
+            Text = "Body Aimbot ON",
             Color = Color3.new(1, 1, 0),
             FontSize = Enum.FontSize.Size24
         })
@@ -147,9 +140,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     
     if input.KeyCode == Enum.KeyCode.E then
-        ToggleAimbot(false) -- Body aim
-    elseif input.KeyCode == Enum.KeyCode.F then
-        ToggleAimbot(true) -- Head aim
+        ToggleAimbot()
     elseif input.KeyCode == Enum.KeyCode.J then
         ToggleESP()
     end
@@ -158,7 +149,7 @@ end)
 --[[ Main Loop ]]--
 RunService.RenderStepped:Connect(function(deltaTime)
     -- Aimbot logic
-    if Toggles.Camera or Toggles.HeadAim then
+    if Toggles.Camera then
         local now = tick()
         if now - LastAimbotUpdate > 0.1 then
             CameraTarget = FindClosestPlayerToScreenCenter()
@@ -166,7 +157,7 @@ RunService.RenderStepped:Connect(function(deltaTime)
         end
         
         if CameraTarget and IsPlayerAlive(CameraTarget) then
-            AimAtPlayer(CameraTarget, Toggles.HeadAim)
+            AimAtPlayer(CameraTarget)
         end
     end
 end)
